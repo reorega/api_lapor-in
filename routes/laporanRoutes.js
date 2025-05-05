@@ -16,6 +16,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get("/", laporanController.getLaporan);
+router.get("/masuk", laporanController.getLaporanMasuk);
+router.get("/proses", laporanController.getLaporanProses);
+router.get("/selesai", laporanController.getLaporanSelesai);
 router.get("/:id", laporanController.getLaporanId);
 router.post("/", upload.single("foto"), laporanController.createLaporan);
 

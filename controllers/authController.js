@@ -43,7 +43,12 @@ exports.login = async (req, res) => {
       { expiresIn: "1h" } // token berlaku 1 jam
     );
 
-    res.json({ success: true, message: "Login berhasil", token });
+    res.json({
+      success: true,
+      message: "Login berhasil",
+      token,
+      instansi_id: user.instansi_id, // pastikan kolom ini ada di tabel
+    });
   } catch (error) {
     res
       .status(500)

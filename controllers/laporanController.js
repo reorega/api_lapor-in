@@ -4,7 +4,7 @@ const path = require("path");
 exports.createLaporan = async (req, res) => {
   try {
     const {
-      kategori_id,
+      // kategori_id,
       instansi_id,
       judul_laporan,
       deskripsi_laporan,
@@ -17,7 +17,7 @@ exports.createLaporan = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Foto wajib diunggah" });
     }
-
+    /*
     // Ambil nama kategori
     const category = await laporanModel.getCategoryNameById(kategori_id);
     if (!category) {
@@ -37,6 +37,7 @@ exports.createLaporan = async (req, res) => {
     }
 
     const kode_laporan = prefix + nextNumber;
+    */
 
     // Format tanggal sekarang
     const today = new Date();
@@ -47,7 +48,7 @@ exports.createLaporan = async (req, res) => {
 
     // Simpan data
     const laporanData = {
-      kode_laporan,
+      //kode_laporan,
       judul_laporan,
       deskripsi_laporan,
       tanggal,
@@ -55,7 +56,7 @@ exports.createLaporan = async (req, res) => {
       foto: file.filename,
       status_laporan: "menunggu verifikasi",
       instansi_id,
-      kategori_id,
+      //kategori_id,
     };
 
     await laporanModel.create(laporanData);
@@ -87,8 +88,68 @@ exports.getLaporan = async (req, res) => {
 };
 exports.getLaporanId = async (req, res) => {
   try {
-    const users = await laporanModel.getAll();
-    res.json({ success: true, data: users });
+    const laporan = await laporanModel.getById(parseInt(req.params.id));
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data laporan",
+      error: error.message,
+    });
+  }
+};
+exports.getLaporanMasuk = async (req, res) => {
+  try {
+    const laporan = await laporanModel.getMasuk(1);
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data laporan",
+      error: error.message,
+    });
+  }
+};
+exports.getLaporanProses = async (req, res) => {
+  try {
+    const laporan = await laporanModel.getProses(2);
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data laporan",
+      error: error.message,
+    });
+  }
+};
+exports.getLaporanSelesai = async (req, res) => {
+  try {
+    const laporan = await laporanModel.getSelesai(3);
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,

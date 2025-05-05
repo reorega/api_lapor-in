@@ -5,7 +5,6 @@ module.exports = {
     const [rows] = await db.query(
       `SELECT 
       l.id, 
-      l.kode_laporan, 
       l.judul_laporan, 
       l.deskripsi_laporan, 
       l.lokasi, 
@@ -20,24 +19,85 @@ module.exports = {
 
   getById: async (id) => {
     const [rows] = await db.query(
-      "SELECT id, nama_lengkap, hp, email FROM users WHERE id = ?",
+      `SELECT 
+      l.id, 
+      l.judul_laporan, 
+      l.deskripsi_laporan, 
+      l.lokasi, 
+      l.foto_laporan, 
+      DATE_FORMAT(l.tanggal, '%d-%m-%Y') AS tanggal, 
+      i.nama_instansi
+    FROM laporan l
+    JOIN instansi i ON l.instansi_id = i.id
+    where l.id= ?`,
       [id]
     );
     return rows[0];
   },
+  getMasuk: async (no) => {
+    const [rows] = await db.query(
+      `SELECT 
+      l.id, 
+      l.judul_laporan, 
+      l.deskripsi_laporan, 
+      l.lokasi, 
+      l.foto_laporan, 
+      DATE_FORMAT(l.tanggal, '%d-%m-%Y') AS tanggal, 
+      i.nama_instansi
+    FROM laporan l
+    JOIN instansi i ON l.instansi_id = i.id
+    where l.status= ?`,
+      [no]
+    );
+    return rows;
+  },
+  getProses: async (no) => {
+    const [rows] = await db.query(
+      `SELECT 
+      l.id, 
+      l.judul_laporan, 
+      l.deskripsi_laporan, 
+      l.lokasi, 
+      l.foto_laporan, 
+      DATE_FORMAT(l.tanggal, '%d-%m-%Y') AS tanggal, 
+      i.nama_instansi
+    FROM laporan l
+    JOIN instansi i ON l.instansi_id = i.id
+    where l.status= ?`,
+      [no]
+    );
+    return rows;
+  },
+  getSelesai: async (no) => {
+    const [rows] = await db.query(
+      `SELECT 
+      l.id, 
+      l.judul_laporan, 
+      l.deskripsi_laporan, 
+      l.lokasi, 
+      l.foto_laporan, 
+      DATE_FORMAT(l.tanggal, '%d-%m-%Y') AS tanggal, 
+      i.nama_instansi
+    FROM laporan l
+    JOIN instansi i ON l.instansi_id = i.id
+    where l.status= ?`,
+      [no]
+    );
+    return rows;
+  },
   //Create
   create: async (laporan) => {
     const [result] = await db.query(
-      "INSERT INTO laporan (kode_laporan, judul_laporan, deskripsi_laporan, tanggal, lokasi, foto_laporan, instansi_id, kategori_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO laporan (judul_laporan, deskripsi_laporan, tanggal, lokasi, foto_laporan, instansi_id) VALUES (?, ?, ?, ?, ?, ?)",
       [
-        laporan.kode_laporan,
+        // laporan.kode_laporan,
         laporan.judul_laporan,
         laporan.deskripsi_laporan,
         laporan.tanggal,
         laporan.lokasi,
         laporan.foto,
         laporan.instansi_id,
-        laporan.kategori_id,
+        //laporan.kategori_id,
       ]
     );
     return result;
