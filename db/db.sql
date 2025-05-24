@@ -68,8 +68,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table lapor-in.users: ~1 rows (approximately)
-INSERT INTO `users` (`id`, `nama_lengkap`, `hp`, `email`, `password`, `instansi_id`) VALUES
-	(1, 'Budi Santoso', '081234567890', 'budi@example.com', 'QnVkaUAxMjM0', NULL);
+INSERT INTO `users` (`id`, `nama_lengkap`, `hp`, `email`, `password`, `instansi_id`, 'role') VALUES
+	(1, 'Budi Santoso', '081234567890', 'budi@example.com', 'QnVkaUAxMjM0', NULL,'user', );
+	(1, 'admin', '081234567890', 'admin@gmail.com', 'YWRtaW4xMjM=', NULL,'admin', );
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
