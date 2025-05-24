@@ -2,6 +2,7 @@ const laporanModel = require("../models/laporanModel");
 const path = require("path");
 
 exports.createLaporan = async (req, res) => {
+  const userId = req.user.id;
   try {
     const {
       // kategori_id,
@@ -54,8 +55,9 @@ exports.createLaporan = async (req, res) => {
       tanggal,
       lokasi,
       foto: file.filename,
-      status_laporan: "menunggu verifikasi",
+      status_laporan: "1",
       instansi_id,
+      userId,
       //kategori_id,
     };
 
@@ -105,8 +107,9 @@ exports.getLaporanId = async (req, res) => {
   }
 };
 exports.getLaporanMasuk = async (req, res) => {
+  const userId = req.user.id;
   try {
-    const laporan = await laporanModel.getMasuk(1);
+    const laporan = await laporanModel.getMasuk(1, userId);
     if (laporan) {
       res.json({ success: true, data: laporan });
     } else {
@@ -143,6 +146,89 @@ exports.getLaporanProses = async (req, res) => {
 exports.getLaporanSelesai = async (req, res) => {
   try {
     const laporan = await laporanModel.getSelesai(3);
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data laporan",
+      error: error.message,
+    });
+  }
+};
+
+exports.getDashboard = async (req, res) => {
+  const instansiId = req.user.instansi_id;
+  try {
+    const laporan = await laporanModel.getDashboard(instansiId);
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data dashboard",
+      error: error.message,
+    });
+  }
+};
+
+exports.getLaporanAdmin = async (req, res) => {
+  const instansiId = req.user.instansi_id;
+  try {
+    const laporan = await laporanModel.getLaporanAdmin(instansiId);
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data dashboard",
+      error: error.message,
+    });
+  }
+};
+
+exports.getLaporanIdAdmin = async (req, res) => {
+  try {
+    const laporan = await laporanModel.getByIdAdmin(parseInt(req.params.id));
+    if (laporan) {
+      res.json({ success: true, data: laporan });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Laporan tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data laporan",
+      error: error.message,
+    });
+  }
+};
+
+exports.updateStatus = async (req, res) => {
+  console.log("BODY DI AUTH MIDDLEWARE:", req.body);
+  const statusId = req.body.status_id;
+  try {
+    const laporan = await laporanModel.updateStatus(
+      parseInt(req.params.id),
+      statusId
+    );
     if (laporan) {
       res.json({ success: true, data: laporan });
     } else {
