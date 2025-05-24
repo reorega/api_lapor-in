@@ -22,13 +22,11 @@ exports.getUsers = async (req, res) => {
     const users = await userModel.getAll();
     res.json({ success: true, data: users });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Gagal mengambil data users",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data users",
+      error: error.message,
+    });
   }
 };
 
@@ -41,13 +39,11 @@ exports.getUserById = async (req, res) => {
       res.status(404).json({ success: false, message: "User tidak ditemukan" });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Gagal mengambil user",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil user",
+      error: error.message,
+    });
   }
 };
 
@@ -63,13 +59,11 @@ exports.createUser = async (req, res) => {
       .status(201)
       .json({ success: true, message: "User berhasil dibuat", data: newUser });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Gagal membuat user",
-        error: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: "Gagal membuat user",
+      error: error.message,
+    });
   }
 };
 
@@ -80,20 +74,22 @@ exports.updateUser = async (req, res) => {
       return res.status(400).json({ success: false, message: validationError });
     }
 
-    const updated = await userModel.update(parseInt(req.params.id), req.body);
-    res.json({
-      success: true,
-      message: "User berhasil diupdate",
-      data: updated,
-    });
-  } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Gagal mengupdate user",
-        error: error.message,
+    const updated = await userModel.update(req.user.id, req.body);
+    if (updated) {
+      res.json({
+        success: true,
+        message: "User berhasil diupdate",
+        data: updated,
       });
+    } else {
+      res.status(404).json({ success: false, message: "User tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Gagal mengupdate user",
+      error: error.message,
+    });
   }
 };
 
@@ -102,12 +98,48 @@ exports.deleteUser = async (req, res) => {
     await userModel.remove(parseInt(req.params.id));
     res.status(200).json({ success: true, message: "User berhasil dihapus" });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Gagal menghapus user",
-        error: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: "Gagal menghapus user",
+      error: error.message,
+    });
+  }
+};
+
+exports.getMe = async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId);
+  try {
+    const users = await userModel.getMe(userId);
+    if (users) {
+      res.json({ success: true, data: users });
+    } else {
+      res.status(404).json({ success: false, message: "User tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data users",
+      error: error.message,
+    });
+  }
+};
+
+exports.getMeDetail = async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId);
+  try {
+    const users = await userModel.getMeDetail(userId);
+    if (users) {
+      res.json({ success: true, data: users });
+    } else {
+      res.status(404).json({ success: false, message: "User tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data users",
+      error: error.message,
+    });
   }
 };

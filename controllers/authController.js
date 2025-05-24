@@ -42,17 +42,17 @@ exports.login = async (req, res) => {
         id: user.id,
         email: user.email,
         nama_lengkap: user.nama_lengkap,
-        role: user.role,
+        instansi_id: user.instansi_id,
+        role_id: user.role_id,
       },
       JWT_SECRET,
-      { expiresIn: "1h" } // token berlaku 1 jam
+      { expiresIn: "1h" }
     );
 
     res.json({
       success: true,
       message: "Login berhasil",
       token,
-      instansi_id: user.instansi_id, // pastikan kolom ini ada di tabel
     });
   } catch (error) {
     res
