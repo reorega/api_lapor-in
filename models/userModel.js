@@ -15,7 +15,10 @@ module.exports = {
     );
     return rows[0];
   },
-
+  getByIdNew: async (id) => {
+    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
+    return rows[0];
+  },
   create: async (user) => {
     const encodedPassword = Buffer.from(user.password).toString("base64");
     const [result] = await db.query(
@@ -60,5 +63,40 @@ module.exports = {
   getMeDetail: async (id) => {
     const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
     return rows[0];
+  },
+
+  findByEmail: async (email) => {
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+    return rows[0];
+  },
+
+  setResetCode: async (email, code, expiry) => {
+    await db.query(
+      "UPDATE users SET reset_code = ?, reset_code_expiry = ? WHERE email = ?",
+      [code, expiry, email]
+    );
+  },
+
+  updatePassword: async (email, Password) => {
+    const encodedPassword = Buffer.from(Password).toString("base64");
+    await db.query(
+      "UPDATE users SET password = ?, reset_code = NULL, reset_code_expiry = NULL WHERE email = ?",
+      [encodedPassword, email]
+    );
+  },
+
+  gantiPw: async (id, Password) => {
+    const encodedPassword = Buffer.from(Password).toString("base64");
+    await db.query("UPDATE users SET password = ? WHERE id = ?", [
+      encodedPassword,
+      id,
+    ]);
+    const [updatedRows] = await db.query(`SELECT * FROM users WHERE id = ?`, [
+      id,
+    ]);
+
+    return updatedRows[0];
   },
 };

@@ -1,4 +1,5 @@
 const userModel = require("../models/userModel");
+const { Buffer } = require("buffer");
 
 function validateUser(data) {
   if (!data.nama_lengkap || !data.hp || !data.email || !data.password) {
@@ -132,6 +133,38 @@ exports.getMeDetail = async (req, res) => {
     const users = await userModel.getMeDetail(userId);
     if (users) {
       res.json({ success: true, data: users });
+    } else {
+      res.status(404).json({ success: false, message: "User tidak ditemukan" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengambil data users",
+      error: error.message,
+    });
+  }
+};
+
+exports.gantiPassword = async (req, res) => {
+  const id = req.user.id;
+  const pwLama = req.body.currentPassword;
+  const pwBaru = req.body.newPassword;
+  const users = await userModel.getByIdNew(id);
+  const decodedPassword = Buffer.from(users.password, "base64").toString(
+    "utf8"
+  );
+  if (pwLama != decodedPassword) {
+    res.status(404).json({ success: false, message: "Password lama salah" });
+  }
+  if (pwLama == pwBaru) {
+    res
+      .status(404)
+      .json({ success: false, message: "Password sama password sebelumnya" });
+  }
+  try {
+    const ganti = await userModel.gantiPw(id, pwBaru);
+    if (ganti) {
+      res.json({ success: true, data: ganti });
     } else {
       res.status(404).json({ success: false, message: "User tidak ditemukan" });
     }
